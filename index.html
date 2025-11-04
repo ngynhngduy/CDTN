@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop của Duy</title>
+    <style>
+        /* CSS cơ bản */
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        h1 { color: #333; text-align: center; }
+        .product-list { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+        .product-card { 
+            background: #fff; 
+            padding: 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            width: 300px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        .product-card h2 { font-size: 1.2em; color: #007bff; margin-top: 0; }
+        .product-card p { margin: 5px 0; }
+        .price { font-weight: bold; color: #dc3545; font-size: 1.1em; }
+    </style>
+</head>
+<body>
+
+    <h1>🛍️ Danh Sách Sản Phẩm</h1>
+    <div id="products-container" class="product-list">
+        </div>
+
+    <script>
+        // Địa chỉ API của Backend (đảm bảo Backend đang chạy)
+        const API_URL = 'http://localhost:3000/api/products';
+        const productsContainer = document.getElementById('products-container');
+
+        // Hàm gọi API và hiển thị sản phẩm
+        async function fetchProducts() {
+            try {
+                // 1. Gọi đến API backend
+                const response = await fetch(API_URL);
+                if (!response.ok) {
+                    throw new Error('Lỗi khi tải dữ liệu sản phẩm');
+                }
+                const products = await response.json();
+                
+                // 2. Hiển thị dữ liệu lên giao diện
+                products.forEach(product => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    
+                    card.innerHTML = `
+                        <h2>${product.name}</h2>
+                        <p>${product.description}</p>
+                        <p class="price">${product.price.toLocaleString('vi-VN')} VNĐ</p>
+                        <button onclick="addToCart(${product.id}, '${product.name}')">Thêm vào giỏ</button>
+                    `;
+                    
+                    productsContainer.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error('Lỗi Fetch:', error);
+                productsContainer.innerHTML = `<p style="color: red;">Không thể kết nối đến máy chủ: ${error.message}. Vui lòng kiểm tra Server Backend.</p>`;
+            }
+        }
+
+        // Hàm đơn giản mô phỏng thêm vào giỏ hàng
+        function addToCart(id, name) {
+            alert(`Đã thêm sản phẩm ID ${id}: "${name}" vào giỏ hàng.`);
+            // Trong thực tế, bạn sẽ lưu vào localStorage hoặc gửi lên server
+        }
+
+        // Chạy hàm khi trang tải xong
+        fetchProducts();
+    </script>
+
+</body>
+</html>
