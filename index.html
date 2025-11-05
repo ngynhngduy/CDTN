@@ -41,6 +41,7 @@
                 if (!response.ok) {
                     throw new Error('Lỗi khi tải dữ liệu sản phẩm');
                 }
+                
                 const products = await response.json();
                 
                 // 2. Hiển thị dữ liệu lên giao diện
